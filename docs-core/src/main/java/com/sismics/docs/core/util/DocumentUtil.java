@@ -40,7 +40,6 @@ public class DocumentUtil {
         acl.setSourceId(documentId);
         acl.setTargetId(userId);
         aclDao.create(acl, userId);
-
         return document;
     }
 }
