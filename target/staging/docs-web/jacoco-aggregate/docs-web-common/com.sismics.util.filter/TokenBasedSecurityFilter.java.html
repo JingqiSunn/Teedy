@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>TokenBasedSecurityFilter.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">Docs Web</a> &gt; <a href="../index.html" class="el_bundle">docs-web-common</a> &gt; <a href="index.source.html" class="el_package">com.sismics.util.filter</a> &gt; <span class="el_source">TokenBasedSecurityFilter.java</span></div><h1>TokenBasedSecurityFilter.java</h1><pre class="source lang-java linenums">package com.sismics.util.filter;
+
+import com.sismics.docs.core.dao.AuthenticationTokenDao;
+import com.sismics.docs.core.dao.UserDao;
+import com.sismics.docs.core.model.jpa.AuthenticationToken;
+import com.sismics.docs.core.model.jpa.User;
+
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import java.text.MessageFormat;
+import java.util.Date;
+
+/**
+ * This filter is used to authenticate the user having an active session via an authentication token stored in database.
+ * The filter extracts the authentication token stored in a cookie.
+ * If the cookie exists and the token is valid, the filter injects a UserPrincipal into a request attribute.
+ * If not, the user is anonymous, and the filter injects a AnonymousPrincipal into the request attribute.
+ *
+ * @author jtremeaux
+ */
+<span class="nc" id="L21">public class TokenBasedSecurityFilter extends SecurityFilter {</span>
+    /**
+     * Name of the cookie used to store the authentication token.
+     */
+    public static final String COOKIE_NAME = &quot;auth_token&quot;;
+
+    /**
+     * Lifetime of the authentication token in seconds, since login.
+     */
+    public static final int TOKEN_LONG_LIFETIME = 3600 * 24 * 365 * 20;
+    
+    /**
+     * Lifetime of the authentication token in seconds, since last connection.
+     */
+    private static final int TOKEN_SESSION_LIFETIME = 3600 * 24;
+
+    /**
+     * Extracts and returns an authentication token from a cookie list.
+     *
+     * @param cookies Cookie list
+     * @return nullable auth token
+     */
+    private String extractAuthToken(Cookie[] cookies) {
+<span class="nc bnc" id="L44" title="All 2 branches missed.">        if (cookies != null) {</span>
+<span class="nc bnc" id="L45" title="All 2 branches missed.">            for (Cookie cookie : cookies) {</span>
+<span class="nc bnc" id="L46" title="All 4 branches missed.">                if (COOKIE_NAME.equals(cookie.getName()) &amp;&amp; !cookie.getValue().isEmpty()) {</span>
+<span class="nc" id="L47">                    return cookie.getValue();</span>
+                }
+            }
+        }
+
+<span class="nc" id="L52">        return null;</span>
+    }
+
+    /**
+     * Deletes an expired authentication token.
+     *
+     * @param authTokenID auth token ID
+     */
+    private void handleExpiredToken(AuthenticationTokenDao dao, String authTokenID) {
+        try {
+<span class="nc" id="L62">            dao.delete(authTokenID);</span>
+<span class="nc" id="L63">        } catch (Exception e) {</span>
+<span class="nc bnc" id="L64" title="All 2 branches missed.">            if (LOG.isErrorEnabled())</span>
+<span class="nc" id="L65">                LOG.error(MessageFormat.format(&quot;Error deleting authentication token {0} &quot;, authTokenID), e);</span>
+<span class="nc" id="L66">        }</span>
+<span class="nc" id="L67">    }</span>
+
+    /**
+     * Returns true if the token is expired.
+     * 
+     * @param authenticationToken Authentication token
+     * @return Token expired
+     */
+    private boolean isTokenExpired(AuthenticationToken authenticationToken) {
+<span class="nc" id="L76">        final long now = new Date().getTime();</span>
+<span class="nc" id="L77">        final long creationDate = authenticationToken.getCreationDate().getTime();</span>
+<span class="nc bnc" id="L78" title="All 2 branches missed.">        if (authenticationToken.isLongLasted()) {</span>
+<span class="nc bnc" id="L79" title="All 2 branches missed.">            return now &gt;= creationDate + ((long) TOKEN_LONG_LIFETIME) * 1000L;</span>
+        } else {
+<span class="nc bnc" id="L81" title="All 2 branches missed.">            long date = authenticationToken.getLastConnectionDate() != null ?</span>
+<span class="nc" id="L82">                    authenticationToken.getLastConnectionDate().getTime() : creationDate;</span>
+<span class="nc bnc" id="L83" title="All 2 branches missed.">            return now &gt;= date + ((long) TOKEN_SESSION_LIFETIME) * 1000L;</span>
+        }
+    }
+
+    @Override
+    protected User authenticate(HttpServletRequest request) {
+        // Get the value of the client authentication token
+<span class="nc" id="L90">        String authTokenId = extractAuthToken(request.getCookies());</span>
+<span class="nc bnc" id="L91" title="All 2 branches missed.">        if (authTokenId == null) {</span>
+<span class="nc" id="L92">            return null;</span>
+        }
+
+        // Get the corresponding server token
+<span class="nc" id="L96">        AuthenticationTokenDao authTokenDao = new AuthenticationTokenDao();</span>
+<span class="nc" id="L97">        AuthenticationToken authToken = authTokenDao.get(authTokenId);</span>
+<span class="nc bnc" id="L98" title="All 2 branches missed.">        if (authToken == null) {</span>
+<span class="nc" id="L99">            return null;</span>
+        }
+
+<span class="nc bnc" id="L102" title="All 2 branches missed.">        if (isTokenExpired(authToken)) {</span>
+<span class="nc" id="L103">            handleExpiredToken(authTokenDao, authTokenId);</span>
+<span class="nc" id="L104">            return null;</span>
+        }
+
+<span class="nc" id="L107">        return new UserDao().getById(authToken.getUserId());</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

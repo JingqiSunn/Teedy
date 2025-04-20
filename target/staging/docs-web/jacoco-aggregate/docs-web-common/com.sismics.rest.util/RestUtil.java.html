@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>RestUtil.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">Docs Web</a> &gt; <a href="../index.html" class="el_bundle">docs-web-common</a> &gt; <a href="index.source.html" class="el_package">com.sismics.rest.util</a> &gt; <span class="el_source">RestUtil.java</span></div><h1>RestUtil.java</h1><pre class="source lang-java linenums">package com.sismics.rest.util;
+
+import com.sismics.docs.core.model.jpa.File;
+import com.sismics.docs.core.util.DirectoryUtil;
+import com.sismics.docs.core.util.FileUtil;
+import com.sismics.rest.exception.ServerException;
+import com.sismics.util.JsonUtil;
+
+import jakarta.json.Json;
+import jakarta.json.JsonObjectBuilder;
+
+import java.io.IOException;
+import java.nio.file.Files;
+
+/**
+ * Rest utilities.
+ *
+ * @author bgamard
+ */
+<span class="nc" id="L20">public class RestUtil {</span>
+    /**
+     * Transform a File into its JSON representation.
+     * If the file size it is not stored in the database the size can be wrong
+     * because the encrypted file size is used.
+     * @param fileDb a file
+     * @return the JSON
+     */
+    public static JsonObjectBuilder fileToJsonObjectBuilder(File fileDb) {
+        try {
+<span class="nc bnc" id="L30" title="All 2 branches missed.">            long fileSize = fileDb.getSize().equals(File.UNKNOWN_SIZE) ? Files.size(DirectoryUtil.getStorageDirectory().resolve(fileDb.getId())) : fileDb.getSize();</span>
+<span class="nc" id="L31">            return Json.createObjectBuilder()</span>
+<span class="nc" id="L32">                    .add(&quot;id&quot;, fileDb.getId())</span>
+<span class="nc" id="L33">                    .add(&quot;processing&quot;, FileUtil.isProcessingFile(fileDb.getId()))</span>
+<span class="nc" id="L34">                    .add(&quot;name&quot;, JsonUtil.nullable(fileDb.getName()))</span>
+<span class="nc" id="L35">                    .add(&quot;version&quot;, fileDb.getVersion())</span>
+<span class="nc" id="L36">                    .add(&quot;mimetype&quot;, fileDb.getMimeType())</span>
+<span class="nc" id="L37">                    .add(&quot;document_id&quot;, JsonUtil.nullable(fileDb.getDocumentId()))</span>
+<span class="nc" id="L38">                    .add(&quot;create_date&quot;, fileDb.getCreateDate().getTime())</span>
+<span class="nc" id="L39">                    .add(&quot;size&quot;, fileSize);</span>
+<span class="nc" id="L40">        } catch (IOException e) {</span>
+<span class="nc" id="L41">            throw new ServerException(&quot;FileError&quot;, &quot;Unable to get the size of &quot; + fileDb.getId(), e);</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

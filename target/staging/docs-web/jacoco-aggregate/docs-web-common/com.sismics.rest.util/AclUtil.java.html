@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>AclUtil.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">Docs Web</a> &gt; <a href="../index.html" class="el_bundle">docs-web-common</a> &gt; <a href="index.source.html" class="el_package">com.sismics.rest.util</a> &gt; <span class="el_source">AclUtil.java</span></div><h1>AclUtil.java</h1><pre class="source lang-java linenums">package com.sismics.rest.util;
+
+import com.sismics.docs.core.constant.AclType;
+import com.sismics.docs.core.constant.PermType;
+import com.sismics.docs.core.dao.AclDao;
+import com.sismics.docs.core.dao.dto.AclDto;
+import com.sismics.util.JsonUtil;
+
+import jakarta.json.Json;
+import jakarta.json.JsonArrayBuilder;
+import jakarta.json.JsonObjectBuilder;
+import java.util.List;
+
+/**
+ * Acl utilities.
+ *
+ * @author bgamard
+ */
+<span class="nc" id="L19">public class AclUtil {</span>
+    /**
+     * Add ACLs to a JSON response.
+     *
+     * @param json JSON
+     * @param sourceId Source ID
+     * @param targetIdList List of target ID
+     */
+    public static void addAcls(JsonObjectBuilder json, String sourceId, List&lt;String&gt; targetIdList) {
+<span class="nc" id="L28">        AclDao aclDao = new AclDao();</span>
+<span class="nc" id="L29">        List&lt;AclDto&gt; aclDtoList = aclDao.getBySourceId(sourceId, AclType.USER);</span>
+<span class="nc" id="L30">        JsonArrayBuilder aclList = Json.createArrayBuilder();</span>
+<span class="nc bnc" id="L31" title="All 2 branches missed.">        for (AclDto aclDto : aclDtoList) {</span>
+<span class="nc" id="L32">            aclList.add(Json.createObjectBuilder()</span>
+<span class="nc" id="L33">                    .add(&quot;perm&quot;, aclDto.getPerm().name())</span>
+<span class="nc" id="L34">                    .add(&quot;id&quot;, aclDto.getTargetId())</span>
+<span class="nc" id="L35">                    .add(&quot;name&quot;, JsonUtil.nullable(aclDto.getTargetName()))</span>
+<span class="nc" id="L36">                    .add(&quot;type&quot;, aclDto.getTargetType()));</span>
+<span class="nc" id="L37">        }</span>
+<span class="nc" id="L38">        json.add(&quot;acls&quot;, aclList)</span>
+<span class="nc" id="L39">                .add(&quot;writable&quot;, aclDao.checkPermission(sourceId, PermType.WRITE, targetIdList));</span>
+<span class="nc" id="L40">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

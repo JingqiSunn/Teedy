@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>HeaderBasedSecurityFilter.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">Docs Web</a> &gt; <a href="../index.html" class="el_bundle">docs-web-common</a> &gt; <a href="index.source.html" class="el_package">com.sismics.util.filter</a> &gt; <span class="el_source">HeaderBasedSecurityFilter.java</span></div><h1>HeaderBasedSecurityFilter.java</h1><pre class="source lang-java linenums">package com.sismics.util.filter;
+
+import com.google.common.base.Strings;
+import com.sismics.docs.core.dao.UserDao;
+import com.sismics.docs.core.model.jpa.User;
+
+import jakarta.servlet.FilterConfig;
+import jakarta.servlet.http.HttpServletRequest;
+
+/**
+ * A header-based security filter that authenticates an user using the &quot;X-Authenticated-User&quot; request header as the user ID.
+ * This filter is intended to be used in conjunction with an external authenticating proxy.
+ *
+ * @author pacien
+ */
+<span class="nc" id="L16">public class HeaderBasedSecurityFilter extends SecurityFilter {</span>
+    /**
+     * Authentication header.
+     */
+    public static final String AUTHENTICATED_USER_HEADER = &quot;X-Authenticated-User&quot;;
+
+    /**
+     * True if this authentication method is enabled.
+     */
+    private boolean enabled;
+
+    @Override
+    public void init(FilterConfig filterConfig) {
+<span class="nc bnc" id="L29" title="All 2 branches missed.">        enabled = Boolean.parseBoolean(filterConfig.getInitParameter(&quot;enabled&quot;))</span>
+<span class="nc bnc" id="L30" title="All 2 branches missed.">                || Boolean.parseBoolean(System.getProperty(&quot;docs.header_authentication&quot;));</span>
+<span class="nc" id="L31">    }</span>
+
+    @Override
+    protected User authenticate(HttpServletRequest request) {
+<span class="nc bnc" id="L35" title="All 2 branches missed.">        if (!enabled) {</span>
+<span class="nc" id="L36">            return null;</span>
+        }
+
+<span class="nc" id="L39">        String username = request.getHeader(AUTHENTICATED_USER_HEADER);</span>
+<span class="nc bnc" id="L40" title="All 2 branches missed.">        if (Strings.isNullOrEmpty(username)) {</span>
+<span class="nc" id="L41">            return null;</span>
+        }
+<span class="nc" id="L43">        return new UserDao().getActiveByUsername(username);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

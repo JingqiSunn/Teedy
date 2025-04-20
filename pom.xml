@@ -123,6 +123,44 @@
         <artifactId>jetty-maven-plugin</artifactId>
         <version>${org.eclipse.jetty.jetty-maven-plugin.version}</version>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-pmd-plugin</artifactId>
+        <version>3.26.0</version>
+        <executions>
+            <execution>
+                <goals>
+                    <goal>check</goal>
+                </goals>
+            </execution>
+        </executions>
+        <configuration>
+            <format>html</format>
+            <failOnViolation>false</failOnViolation>
+            <rulesets>
+                <ruleset>customize-rules.xml</ruleset>
+            </rulesets>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>0.8.9</version>
+        <executions>
+            <execution>
+                <goals>
+                    <goal>prepare-agent</goal>
+                </goals>
+            </execution>
+            <execution>
+                <id>report</id>
+                <phase>test</phase>
+                <goals>
+                    <goal>report</goal>
+                </goals>
+            </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
 
@@ -419,6 +457,12 @@
       </dependency>
 
       <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter</artifactId>
+        <version>5.7.1</version>
+      </dependency>
+
+      <dependency>
         <groupId>org.subethamail</groupId>
         <artifactId>subethasmtp-wiser</artifactId>
         <version>${org.subethamail.subethasmtp-wiser.version}</version>
@@ -503,4 +547,51 @@
             <url>file:///Users/sjq/Documents/Teedy/stage</url>
         </site>
     </distributionManagement>
+<reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-pmd-plugin</artifactId>
+        <version>3.26.0</version>
+        <configuration>
+            <format>html</format>
+            <failOnViolation>false</failOnViolation>
+            <rulesets>
+                <ruleset>customize-rules.xml</ruleset>
+            </rulesets>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-report-plugin</artifactId>
+        <version>3.0.0</version>
+        <reportSets>
+            <reportSet>
+                <id>aggregate</id>
+                <inherited>false</inherited>
+                <reports>
+                    <report>report</report>
+                </reports>
+                <configuration>
+                    <aggregate>true</aggregate>
+                </configuration>
+            </reportSet>
+        </reportSets>
+      </plugin>
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>0.8.9</version>
+        <reportSets>
+            <reportSet>
+                <id>aggregate</id>
+                <inherited>false</inherited>
+                <reports>
+                    <report>report-aggregate</report>
+                </reports>
+            </reportSet>
+        </reportSets>
+      </plugin>
+    </plugins>
+  </reporting>
 </project>

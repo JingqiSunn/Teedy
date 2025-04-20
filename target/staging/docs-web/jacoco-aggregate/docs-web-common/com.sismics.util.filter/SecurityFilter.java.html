@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>SecurityFilter.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">Docs Web</a> &gt; <a href="../index.html" class="el_bundle">docs-web-common</a> &gt; <a href="index.source.html" class="el_package">com.sismics.util.filter</a> &gt; <span class="el_source">SecurityFilter.java</span></div><h1>SecurityFilter.java</h1><pre class="source lang-java linenums">package com.sismics.util.filter;
+
+import com.google.common.collect.Sets;
+import com.sismics.docs.core.constant.Constants;
+import com.sismics.docs.core.dao.GroupDao;
+import com.sismics.docs.core.dao.RoleBaseFunctionDao;
+import com.sismics.docs.core.dao.criteria.GroupCriteria;
+import com.sismics.docs.core.dao.dto.GroupDto;
+import com.sismics.docs.core.model.jpa.User;
+import com.sismics.security.AnonymousPrincipal;
+import com.sismics.security.UserPrincipal;
+import org.joda.time.DateTimeZone;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import jakarta.servlet.*;
+import jakarta.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+/**
+ * An abstract security filter for user authentication, that injects corresponding users into the request.
+ * Successfully authenticated users are injected as UserPrincipal, or as AnonymousPrincipal otherwise.
+ * If an user has already been authenticated for the request, no further authentication attempt is made.
+ *
+ * @author pacien
+ * @author jtremeaux
+ */
+<span class="nc" id="L31">public abstract class SecurityFilter implements Filter {</span>
+    /**
+     * Name of the attribute containing the principal.
+     */
+    public static final String PRINCIPAL_ATTRIBUTE = &quot;principal&quot;;
+
+    /**
+     * Logger.
+     */
+<span class="nc" id="L40">    static final Logger LOG = LoggerFactory.getLogger(SecurityFilter.class);</span>
+
+    /**
+     * Returns true if the supplied request has an UserPrincipal.
+     *
+     * @param request HTTP request
+     * @return True if the supplied request has an UserPrincipal
+     */
+    private boolean hasIdentifiedUser(HttpServletRequest request) {
+<span class="nc" id="L49">        return request.getAttribute(PRINCIPAL_ATTRIBUTE) instanceof UserPrincipal;</span>
+    }
+
+    /**
+     * Injects the given user into the request, with the appropriate authentication state.
+     *
+     * @param request HTTP request
+     * @param user nullable User to inject
+     */
+    private void injectUser(HttpServletRequest request, User user) {
+        // Check if the user is still valid
+<span class="nc bnc" id="L60" title="All 6 branches missed.">        if (user != null &amp;&amp; user.getDeleteDate() == null &amp;&amp; user.getDisableDate() == null) {</span>
+<span class="nc" id="L61">            injectAuthenticatedUser(request, user);</span>
+        } else {
+<span class="nc" id="L63">            injectAnonymousUser(request);</span>
+        }
+<span class="nc" id="L65">    }</span>
+
+    /**
+     * Inject an authenticated user into the request attributes.
+     *
+     * @param request HTTP request
+     * @param user User to inject
+     */
+    private void injectAuthenticatedUser(HttpServletRequest request, User user) {
+<span class="nc" id="L74">        UserPrincipal userPrincipal = new UserPrincipal(user.getId(), user.getUsername());</span>
+
+        // Add groups
+<span class="nc" id="L77">        GroupDao groupDao = new GroupDao();</span>
+<span class="nc" id="L78">        Set&lt;String&gt; groupRoleIdSet = new HashSet&lt;&gt;();</span>
+<span class="nc" id="L79">        List&lt;GroupDto&gt; groupDtoList = groupDao.findByCriteria(new GroupCriteria()</span>
+<span class="nc" id="L80">                .setUserId(user.getId())</span>
+<span class="nc" id="L81">                .setRecursive(true), null);</span>
+<span class="nc" id="L82">        Set&lt;String&gt; groupIdSet = Sets.newHashSet();</span>
+<span class="nc bnc" id="L83" title="All 2 branches missed.">        for (GroupDto groupDto : groupDtoList) {</span>
+<span class="nc" id="L84">            groupIdSet.add(groupDto.getId());</span>
+<span class="nc bnc" id="L85" title="All 2 branches missed.">            if (groupDto.getRoleId() != null) {</span>
+<span class="nc" id="L86">                groupRoleIdSet.add(groupDto.getRoleId());</span>
+            }
+<span class="nc" id="L88">        }</span>
+<span class="nc" id="L89">        userPrincipal.setGroupIdSet(groupIdSet);</span>
+
+        // Add base functions
+<span class="nc" id="L92">        groupRoleIdSet.add(user.getRoleId());</span>
+<span class="nc" id="L93">        RoleBaseFunctionDao userBaseFunction = new RoleBaseFunctionDao();</span>
+<span class="nc" id="L94">        Set&lt;String&gt; baseFunctionSet = userBaseFunction.findByRoleId(groupRoleIdSet);</span>
+<span class="nc" id="L95">        userPrincipal.setBaseFunctionSet(baseFunctionSet);</span>
+
+        // Add email
+<span class="nc" id="L98">        userPrincipal.setEmail(user.getEmail());</span>
+
+<span class="nc" id="L100">        request.setAttribute(PRINCIPAL_ATTRIBUTE, userPrincipal);</span>
+<span class="nc" id="L101">    }</span>
+
+    /**
+     * Inject an anonymous user into the request attributes.
+     *
+     * @param request HTTP request
+     */
+    private void injectAnonymousUser(HttpServletRequest request) {
+<span class="nc" id="L109">        AnonymousPrincipal anonymousPrincipal = new AnonymousPrincipal();</span>
+<span class="nc" id="L110">        anonymousPrincipal.setDateTimeZone(DateTimeZone.forID(Constants.DEFAULT_TIMEZONE_ID));</span>
+
+<span class="nc" id="L112">        request.setAttribute(PRINCIPAL_ATTRIBUTE, anonymousPrincipal);</span>
+<span class="nc" id="L113">    }</span>
+
+    @Override
+    public void init(FilterConfig filterConfig) {
+        // NOP
+<span class="nc" id="L118">    }</span>
+
+    @Override
+    public void destroy() {
+        // NOP
+<span class="nc" id="L123">    }</span>
+
+    @Override
+    public void doFilter(ServletRequest req, ServletResponse response, FilterChain filterChain) throws IOException, ServletException {
+<span class="nc" id="L127">        HttpServletRequest request = (HttpServletRequest) req;</span>
+
+<span class="nc bnc" id="L129" title="All 2 branches missed.">        if (!hasIdentifiedUser(request)) {</span>
+<span class="nc" id="L130">            User user = authenticate(request);</span>
+<span class="nc" id="L131">            injectUser(request, user);</span>
+        }
+
+<span class="nc" id="L134">        filterChain.doFilter(request, response);</span>
+<span class="nc" id="L135">    }</span>
+
+    /**
+     * Authenticates an user from the given request parameters.
+     *
+     * @param request HTTP request
+     * @return nullable User
+     */
+    protected abstract User authenticate(HttpServletRequest request);
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

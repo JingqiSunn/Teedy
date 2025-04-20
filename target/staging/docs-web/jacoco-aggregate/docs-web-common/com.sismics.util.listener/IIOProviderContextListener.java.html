@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>IIOProviderContextListener.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">Docs Web</a> &gt; <a href="../index.html" class="el_bundle">docs-web-common</a> &gt; <a href="index.source.html" class="el_package">com.sismics.util.listener</a> &gt; <span class="el_source">IIOProviderContextListener.java</span></div><h1>IIOProviderContextListener.java</h1><pre class="source lang-java linenums">package com.sismics.util.listener;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import javax.imageio.ImageIO;
+import javax.imageio.spi.IIORegistry;
+import javax.imageio.spi.ServiceRegistry;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletContextEvent;
+import jakarta.servlet.ServletContextListener;
+
+/**
+ * Takes care of registering and de-registering local ImageIO plugins (service providers) for the servlet context.
+ * &lt;p&gt;
+ * Registers all available plugins on {@code contextInitialized} event, using {@code ImageIO.scanForPlugins()}, to make
+ * sure they are available to the current servlet context.
+ * De-registers all plugins which have the {@link Thread#getContextClassLoader() current thread's context class loader}
+ * as its class loader on {@code contextDestroyed} event, to avoid class/resource leak.
+ * &lt;/p&gt;
+ * Copied from: &lt;a href=&quot;https://github.com/haraldk/TwelveMonkeys/blob/master/servlet/src/main/java/com/twelvemonkeys/servlet/image/IIOProviderContextListener.java&quot;&gt;https://github.com/haraldk/TwelveMonkeys&lt;/a&gt;
+ *
+ * @author &lt;a href=&quot;mailto:harald.kuhr@gmail.com&quot;&gt;Harald Kuhr&lt;/a&gt;
+ * @author last modified by $Author: haraldk$
+ * @version $Id: IIOProviderContextListener.java,v 1.0 14.02.12 21:53 haraldk Exp$
+ * @see ImageIO#scanForPlugins()
+ */
+<span class="nc" id="L29">public final class IIOProviderContextListener implements ServletContextListener {</span>
+    
+    public void contextInitialized(final ServletContextEvent event) {
+<span class="nc" id="L32">        event.getServletContext().log(&quot;Scanning for locally installed ImageIO plugin providers&quot;);</span>
+
+        // Registers all locally available IIO plugins.
+<span class="nc" id="L35">        ImageIO.scanForPlugins();</span>
+<span class="nc" id="L36">    }</span>
+
+    public void contextDestroyed(final ServletContextEvent event) {
+<span class="nc" id="L39">        ServletContext servletContext = event.getServletContext();</span>
+
+        // De-register any locally registered IIO plugins. Relies on each web app having its own context class loader.
+<span class="nc" id="L42">        LocalFilter localFilter = new LocalFilter(Thread.currentThread().getContextClassLoader()); // scanForPlugins uses context class loader</span>
+
+<span class="nc" id="L44">        IIORegistry registry = IIORegistry.getDefaultInstance();</span>
+<span class="nc" id="L45">        Iterator&lt;Class&lt;?&gt;&gt; categories = registry.getCategories();</span>
+
+<span class="nc bnc" id="L47" title="All 2 branches missed.">        while (categories.hasNext()) {</span>
+<span class="nc" id="L48">            deregisterLocalProvidersForCategory(registry, localFilter, categories.next(), servletContext);</span>
+        }
+<span class="nc" id="L50">    }</span>
+
+    private static &lt;T&gt; void deregisterLocalProvidersForCategory(IIORegistry registry, LocalFilter localFilter, Class&lt;T&gt; category, ServletContext context) {
+<span class="nc" id="L53">        Iterator&lt;T&gt; providers = registry.getServiceProviders(category, localFilter, false);</span>
+
+        // Copy the providers, as de-registering while iterating over providers will lead to ConcurrentModificationExceptions.
+<span class="nc" id="L56">        List&lt;T&gt; providersCopy = new ArrayList&lt;&gt;();</span>
+<span class="nc bnc" id="L57" title="All 2 branches missed.">        while (providers.hasNext()) {</span>
+<span class="nc" id="L58">            providersCopy.add(providers.next());</span>
+        }
+
+<span class="nc bnc" id="L61" title="All 2 branches missed.">        for (T provider : providersCopy) {</span>
+<span class="nc" id="L62">            registry.deregisterServiceProvider(provider, category);</span>
+<span class="nc" id="L63">            context.log(String.format(&quot;Unregistered locally installed provider class: %s&quot;, provider.getClass()));</span>
+<span class="nc" id="L64">        }</span>
+<span class="nc" id="L65">    }</span>
+
+    static class LocalFilter implements ServiceRegistry.Filter {
+        private final ClassLoader loader;
+
+<span class="nc" id="L70">        public LocalFilter(ClassLoader loader) {</span>
+<span class="nc" id="L71">            this.loader = loader;</span>
+<span class="nc" id="L72">        }</span>
+
+        public boolean filter(Object provider) {
+<span class="nc bnc" id="L75" title="All 2 branches missed.">            return provider.getClass().getClassLoader() == loader;</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
