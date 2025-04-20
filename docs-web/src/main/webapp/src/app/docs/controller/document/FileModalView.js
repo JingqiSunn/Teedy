@@ -3,13 +3,14 @@
 /**
  * File modal view controller.
  */
-angular.module('docs').controller('FileModalView', function ($uibModalInstance, $scope, $state, $stateParams, $sce, Restangular, $transitions) {
+angular.module('docs').controller('FileModalView', function ($uibModalInstance, $scope, $state, $stateParams, $sce, Restangular, $transitions, $http) {
   var setFile = function (files) {
     // Search current file
     _.each(files, function (value) {
       if (value.id === $stateParams.fileId) {
         $scope.file = value;
         $scope.trustedFileUrl = $sce.trustAsResourceUrl('../api/file/' + $stateParams.fileId + '/data');
+        $scope.originalContent = value.content;  // Store the original content
       }
     });
   };
@@ -26,6 +27,29 @@ angular.module('docs').controller('FileModalView', function ($uibModalInstance, 
       });
     }
   });
+
+  // Translate the file content to Chinese without modifying the original file content
+  $scope.translateToChinese = function () {
+    var originalContent = $scope.file.content;
+
+    // Call LibreTranslate API to translate content to Chinese
+    var translationUrl = 'https://libretranslate.com/translate';  // Replace with your LibreTranslate instance if needed
+    var requestData = {
+      q: originalContent,
+      source: 'en',  // Assuming source is English, adjust as necessary
+      target: 'zh',
+      format: 'text'
+    };
+
+    $http.post(translationUrl, requestData).then(function (response) {
+      // If translation is successful, show translated content in the page
+      $scope.file.content = response.data.translatedText;
+    }, function () {
+      // If translation fails, keep the original content and show an alert
+      alert('Translation failed. Showing original content.');
+      $scope.file.content = originalContent;
+    });
+  };
 
   /**
    * Return the next file.
