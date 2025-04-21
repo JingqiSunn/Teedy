@@ -56,76 +56,94 @@ angular.module('docs').controller('FileModalView', function ($uibModalInstance, 
     }
   });
 
-  // 5. **Translate to Chinese** - Call the backend API to translate file content to Chinese
-  $scope.translateToChinese = function () {
-    var fileId = $stateParams.fileId;
+$scope.translateToChinese = function () {
+  var fileId = $stateParams.fileId;
 
-    // Step 1: Get the file content
-    $http.get('../api/file/' + fileId + '/data?size=content')
-      .then(function (response) {
-        var originalContent = response.data;
-        if (!originalContent) {
-          $scope.translationError = 'No content to translate!';
+  // 第1步：获取文件内容
+  $http.get('../api/file/' + fileId + '/data?size=content')
+    .then(function (response) {
+      var originalContent = response.data;
+      if (!originalContent) {
+        $scope.translationError = '没有内容可以翻译！';
+        return;
+      }
+
+      // 第2步：准备数据调用后端翻译API
+      var data = new URLSearchParams();
+      data.append('text', originalContent);
+      data.append('targetLang', 'ZH');
+
+      var config = {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        // 确保响应被当作JSON处理
+        transformResponse: function (data, headers) {
+          try {
+            // 如果响应是字符串，尝试手动解析它
+            if (typeof data === 'string' && data.trim()) {
+              return JSON.parse(data);
+            }
+            return data;
+          } catch (e) {
+            console.error('解析响应为JSON失败：', data);
+            throw new Error('无效的JSON响应');
+          }
+        }
+      };
+
+      // 第3步：调用后端翻译API
+      return $http.post('../api/translate/text', data.toString(), config);
+    })
+    .then(function (response) {
+      var data = response.data;
+      if (data) {
+        // 处理两种可能的响应格式
+        if (data.translatedText) {
+          $scope.translatedContent = data.translatedText;  // 更新翻译后的内容
+        } else if (data.translations && data.translations[0] && data.translations[0].text) {
+          $scope.translatedContent = data.translations[0].text;  // 更新翻译后的内容
+        } else {
+          $scope.translationError = '没有返回翻译结果。';
           return;
         }
 
-        // Step 2: Prepare data for backend translation API
-        var data = new URLSearchParams();
-        data.append('text', originalContent);
-        data.append('targetLang', 'ZH');
-
-        var config = {
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-          },
-          // Ensure response is treated as JSON
-          transformResponse: function (data, headers) {
-            try {
-              // Manually parse response if it's a string
-              if (typeof data === 'string' && data.trim()) {
-                return JSON.parse(data);
-              }
-              return data;
-            } catch (e) {
-              console.error('Failed to parse response as JSON:', data);
-              throw new Error('Invalid JSON response');
-            }
-          }
+        // 第4步：将翻译后的内容保存为新文件
+        var newFileData = {
+          content: $scope.translatedContent,
+          originalFileId: fileId,  // 关联原始文件ID
+          originalFileName: $scope.file.name + '_translated',  // 设置新文件名称
+          mimetype: $scope.file.mimetype,
+          // 其他必要的文件信息，可以根据实际情况传递
         };
 
-        // Step 3: Call backend translation API
-        return $http.post('../api/translate/text', data.toString(), config);
-      })
-      .then(function (response) {
-        var data = response.data;
-        if (data) {
-          // Handle both possible response formats
-          if (data.translatedText) {
-            $scope.file.content = data.translatedText;
-          } else if (data.translations && data.translations[0] && data.translations[0].text) {
-            $scope.file.content = data.translations[0].text;
-          } else {
-            $scope.translationError = 'No translation result returned.';
-            return;
-          }
-          $scope.translationError = null; // Clear any previous error
-        } else {
-          $scope.translationError = 'No translation result returned.';
-        }
-      })
-      .catch(function (error) {
-        console.error('Translation failed:', error);
-        console.error('Error details:', error.data || error.message);
-        // Handle $http:baddata or other errors
-        var errorMessage = error.message || 'Unknown error';
-        if (error.data && error.data.error) {
-          errorMessage = error.data.error;
-        } else if (error.statusText) {
-          errorMessage = error.statusText;
-        }
-        $scope.translationError = 'Translation failed: ' + errorMessage;
-      });
-  };
+        // 将翻译后的文件保存
+        Restangular.all('file').post(newFileData).then(function (newFile) {
+          // 在保存新文件后，直接跳转到新文件的查看页面
+          $state.go('^.file', { id: $stateParams.id, fileId: newFile.id });
+        }, function (error) {
+          console.error('保存翻译文件失败：', error);
+          $scope.translationError = '保存翻译文件失败';
+        });
+
+        $scope.translationError = null; // 清除之前的错误
+      } else {
+        $scope.translationError = '没有返回翻译结果。';
+      }
+    })
+    .catch(function (error) {
+      console.error('翻译失败：', error);
+      console.error('错误详情：', error.data || error.message);
+      // 处理 $http:baddata 或其他错误
+      var errorMessage = error.message || '未知错误';
+      if (error.data && error.data.error) {
+        errorMessage = error.data.error;
+      } else if (error.statusText) {
+        errorMessage = error.statusText;
+      }
+      $scope.translationError = '翻译失败：' + errorMessage;
+    });
+};
 
   // 6. **Navigate to the next file** - Get the next file in the list
   $scope.nextFile = function () {
