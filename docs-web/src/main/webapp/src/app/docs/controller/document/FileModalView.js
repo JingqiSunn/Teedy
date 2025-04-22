@@ -1,5 +1,18 @@
 'use strict';
 
+// 引入jsPDF库和中文字体
+if (typeof jsPDF === 'undefined') {
+    // 加载jsPDF主库
+    var script1 = document.createElement('script');
+    script1.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+    document.head.appendChild(script1);
+
+    // 加载中文字体支持
+    var script2 = document.createElement('script');
+    script2.src = 'https://cdn.jsdelivr.net/npm/jspdf-font@1.0.7/fonts/NotoSansSC/NotoSansSC-Regular-normal.js';
+    document.head.appendChild(script2);
+}
+
 /**
  * File modal view controller.
  */
@@ -108,27 +121,72 @@ $scope.translateToChinese = function () {
           return;
         }
         console.log('翻译结果：', $scope.translatedContent);
+        //$scope.translatedContent = 'Hello World';
 
         // 第4步：将翻译后的内容保存为新文件
-        // 创建一个Blob对象，包含翻译后的内容
-        var blob = new Blob([$scope.translatedContent], { type: 'text/plain' });
+        // 使用jsPDF创建PDF文件，设置为支持中文的编码
+        var doc = new jsPDF('p', 'pt', 'a4');
         
-        // 创建一个File对象，用于上传
-        var translatedFile = new File([blob], $scope.file.name + '_translated.txt', { type: 'text/plain' });
+        // 将内容转换为HTML
+        var htmlContent = '<div style="font-family: SimSun;">' + 
+            $scope.translatedContent.split('\n').join('<br>') + 
+            '</div>';
+            
+        // 创建一个临时div来渲染内容
+        var div = document.createElement('div');
+        div.innerHTML = htmlContent;
+        div.style.width = '500px';
+        div.style.position = 'absolute';
+        div.style.left = '-9999px';
+        document.body.appendChild(div);
         
-        // 准备上传数据
-        var uploadData = {
-          id: $stateParams.id,
-          name: $scope.file.name + '_translated',
-          mimetype: 'application/pdf'  // 设置为PDF类型
-        };
-        
-        // 使用Upload服务上传文件
-        return Upload.upload({
-          method: 'PUT',
-          url: '../api/file',
-          file: translatedFile,
-          fields: uploadData
+        // 使用html2canvas将内容转换为图片
+        html2canvas(div).then(function(canvas) {
+            // 移除临时div
+            document.body.removeChild(div);
+            
+            // 将canvas转换为图片
+            var imgData = canvas.toDataURL('image/png');
+            
+            // 计算合适的缩放比例
+            var imgWidth = 595.28; // A4纸的宽度
+            var pageHeight = 841.89; // A4纸的高度
+            var imgHeight = canvas.height * imgWidth / canvas.width;
+            var heightLeft = imgHeight;
+            var position = 0;
+            
+            // 添加第一页
+            doc.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+            heightLeft -= pageHeight;
+            
+            // 如果内容超过一页，添加新页面
+            while (heightLeft >= 0) {
+                position = heightLeft - imgHeight;
+                doc.addPage();
+                doc.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                heightLeft -= pageHeight;
+            }
+            
+            // 将PDF转换为Blob
+            var pdfBlob = doc.output('blob');
+            
+            // 创建一个File对象，用于上传
+            var translatedFile = new File([pdfBlob], $scope.file.name + '_translated.pdf', { type: 'application/pdf' });
+            
+            // 准备上传数据
+            var uploadData = {
+                id: $stateParams.id,
+                name: $scope.file.name + '_translated',
+                mimetype: 'application/pdf'
+            };
+            
+            // 使用Upload服务上传文件
+            return Upload.upload({
+                method: 'PUT',
+                url: '../api/file',
+                file: translatedFile,
+                fields: uploadData
+            });
         });
       } else {
         $scope.translationError = '没有返回翻译结果。';
