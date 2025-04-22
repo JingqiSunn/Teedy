@@ -140,8 +140,12 @@ $scope.translateToChinese = function () {
         div.style.left = '-9999px';
         document.body.appendChild(div);
         
+        // 显示加载提示
+        $scope.isGeneratingPDF = true;
+        $scope.generatingStatus = '正在生成PDF，请稍候...';
+        
         // 使用html2canvas将内容转换为图片
-        html2canvas(div).then(function(canvas) {
+        return html2canvas(div).then(function(canvas) {
             // 移除临时div
             document.body.removeChild(div);
             
@@ -167,6 +171,9 @@ $scope.translateToChinese = function () {
                 heightLeft -= pageHeight;
             }
             
+            // 更新状态
+            $scope.generatingStatus = '正在保存文件...';
+            
             // 将PDF转换为Blob
             var pdfBlob = doc.output('blob');
             
@@ -187,16 +194,24 @@ $scope.translateToChinese = function () {
                 file: translatedFile,
                 fields: uploadData
             });
+        }).then(function(response) {
+            // 上传成功后的处理
+            if (response && response.data) {
+                // 清除状态
+                $scope.isGeneratingPDF = false;
+                $scope.generatingStatus = '';
+                
+                // 跳转到新文件
+                $state.go('^.file', { id: $stateParams.id, fileId: response.data.id });
+                $scope.translationError = null;
+            }
+        }).catch(function(error) {
+            console.error('生成或上传PDF时出错：', error);
+            $scope.isGeneratingPDF = false;
+            $scope.translationError = '生成或上传PDF时出错：' + (error.message || '未知错误');
         });
       } else {
         $scope.translationError = '没有返回翻译结果。';
-      }
-    })
-    .then(function(response) {
-      if (response && response.data) {
-        // 上传成功，跳转到新文件
-        $state.go('^.file', { id: $stateParams.id, fileId: response.data.id });
-        $scope.translationError = null;
       }
     })
     .catch(function (error) {
