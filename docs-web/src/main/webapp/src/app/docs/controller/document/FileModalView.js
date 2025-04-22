@@ -110,30 +110,39 @@ $scope.translateToChinese = function () {
         console.log('翻译结果：', $scope.translatedContent);
 
         // 第4步：将翻译后的内容保存为新文件
-        var newFileData = {
-          content: $scope.translatedContent,
-          originalFileId: fileId,  // 关联原始文件ID
-          originalFileName: $scope.file.name + '_translated',  // 设置新文件名称
-          mimetype: $scope.file.mimetype,
-          // 其他必要的文件信息，可以根据实际情况传递
+        // 创建一个Blob对象，包含翻译后的内容
+        var blob = new Blob([$scope.translatedContent], { type: 'text/plain' });
+        
+        // 创建一个File对象，用于上传
+        var translatedFile = new File([blob], $scope.file.name + '_translated.txt', { type: 'text/plain' });
+        
+        // 准备上传数据
+        var uploadData = {
+          id: $stateParams.id,
+          name: $scope.file.name + '_translated',
+          mimetype: 'application/pdf'  // 设置为PDF类型
         };
-
-        // 将翻译后的文件保存
-        Restangular.all('file').post(newFileData).then(function (newFile) {
-          // 在保存新文件后，直接跳转到新文件的查看页面
-          $state.go('^.file', { id: $stateParams.id, fileId: newFile.id });
-        }, function (error) {
-          console.error('保存翻译文件失败：', error);
-          $scope.translationError = '保存翻译文件失败';
+        
+        // 使用Upload服务上传文件
+        return Upload.upload({
+          method: 'PUT',
+          url: '../api/file',
+          file: translatedFile,
+          fields: uploadData
         });
-
-        $scope.translationError = null; // 清除之前的错误
       } else {
         $scope.translationError = '没有返回翻译结果。';
       }
     })
+    .then(function(response) {
+      if (response && response.data) {
+        // 上传成功，跳转到新文件
+        $state.go('^.file', { id: $stateParams.id, fileId: response.data.id });
+        $scope.translationError = null;
+      }
+    })
     .catch(function (error) {
-      console.error('翻译失败：', error);
+      console.error('翻译或保存失败：', error);
       console.error('错误详情：', error.data || error.message);
       // 处理 $http:baddata 或其他错误
       var errorMessage = error.message || '未知错误';
@@ -142,7 +151,7 @@ $scope.translateToChinese = function () {
       } else if (error.statusText) {
         errorMessage = error.statusText;
       }
-      $scope.translationError = '翻译失败：' + errorMessage;
+      $scope.translationError = '翻译或保存失败：' + errorMessage;
     });
 };
 
