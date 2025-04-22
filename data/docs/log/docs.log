@@ -523,3 +523,31 @@ java.lang.NullPointerException: Cannot invoke "jakarta.persistence.EntityManager
 12 Mar 2025 11:41:18,699 INFO com.sismics.docs.core.service.FileSizeService.shutDown(FileSizeService.java:35) File size service shutting down 
 12 Mar 2025 11:41:52,522 INFO com.sismics.docs.core.service.InboxService.shutDown(InboxService.java:57) Inbox service shutting down 
 12 Mar 2025 11:41:52,522 INFO com.sismics.docs.core.service.FileService.shutDown(FileService.java:44) File service shutting down 
+22 Apr 2025 22:35:54,286 INFO com.sismics.util.jpa.EMF.getEntityManagerProperties(EMF.java:67) Configuring EntityManager from hibernate.properties 
+22 Apr 2025 22:35:54,612 INFO com.sismics.util.jpa.DbOpenHelper.open(DbOpenHelper.java:57) Opening database and executing incremental updates 
+22 Apr 2025 22:35:54,615 INFO com.sismics.util.jpa.DbOpenHelper.open(DbOpenHelper.java:106) Found database version 31, new version is 31, executing database incremental update scripts 
+22 Apr 2025 22:35:54,616 INFO com.sismics.util.jpa.DbOpenHelper.open(DbOpenHelper.java:108) Database upgrade complete 
+22 Apr 2025 22:35:54,616 INFO com.sismics.util.jpa.EMF.getEntityManagerProperties(EMF.java:67) Configuring EntityManager from hibernate.properties 
+22 Apr 2025 22:35:55,521 INFO com.sismics.util.ClasspathScanner.findClasses(ClasspathScanner.java:48) Found 1 classes for IndexingHandler 
+22 Apr 2025 22:35:55,542 INFO com.sismics.docs.core.util.indexing.LuceneIndexingHandler.initLucene(LuceneIndexingHandler.java:129) Using RAM Lucene storage 
+22 Apr 2025 22:35:55,581 INFO com.sismics.docs.core.service.FileService.startUp(FileService.java:39) File service starting up 
+22 Apr 2025 22:35:55,583 INFO com.sismics.docs.core.service.InboxService.startUp(InboxService.java:52) Inbox service starting up 
+22 Apr 2025 22:35:55,583 INFO com.sismics.docs.core.service.FileSizeService.startUp(FileSizeService.java:30) File size service starting up 
+22 Apr 2025 22:35:55,739 INFO com.sismics.docs.core.service.FileSizeService.lambda$runOneIteration$0(FileSizeService.java:50) No more file to process, stopping the service 
+22 Apr 2025 22:35:55,740 INFO com.sismics.docs.core.service.FileSizeService.shutDown(FileSizeService.java:35) File size service shutting down 
+22 Apr 2025 22:36:51,592 INFO com.sismics.util.ClasspathScanner.findClasses(ClasspathScanner.java:48) Found 2 classes for AuthenticationHandler 
+22 Apr 2025 22:36:57,933 INFO com.sismics.docs.core.util.FileUtil.startProcessingFile(FileUtil.java:225) Processing started for file: 11251323-ba8e-41a3-a2ca-27bc8f768c43 
+22 Apr 2025 22:36:57,943 INFO com.sismics.docs.core.listener.async.FileProcessingAsyncListener.on(FileProcessingAsyncListener.java:53) File created event: FileCreatedAsyncEvent{fileId=11251323-ba8e-41a3-a2ca-27bc8f768c43, language=eng} 
+22 Apr 2025 22:36:57,943 INFO com.sismics.docs.core.listener.async.DocumentUpdatedAsyncListener.on(DocumentUpdatedAsyncListener.java:39) Document updated event: DocumentUpdatedAsyncEvent{documentId=2f44cb6c-fd9f-4557-9986-8f2c6689642a} 
+22 Apr 2025 22:36:58,049 INFO com.sismics.util.ClasspathScanner.findClasses(ClasspathScanner.java:48) Found 7 classes for FormatHandler 
+22 Apr 2025 22:36:59,000 INFO com.sismics.docs.core.listener.async.FileProcessingAsyncListener.extractContent(FileProcessingAsyncListener.java:176) Start extracting content from: File{id=11251323-ba8e-41a3-a2ca-27bc8f768c43, name=故事.docx} 
+22 Apr 2025 22:36:59,026 INFO com.sismics.docs.core.listener.async.FileProcessingAsyncListener.extractContent(FileProcessingAsyncListener.java:182) File content extracted in 25ms: 11251323-ba8e-41a3-a2ca-27bc8f768c43 
+22 Apr 2025 22:36:59,038 INFO com.sismics.docs.core.util.FileUtil.endProcessingFile(FileUtil.java:235) Processing ended for file: 11251323-ba8e-41a3-a2ca-27bc8f768c43 
+22 Apr 2025 22:37:22,951 INFO com.sismics.docs.core.util.FileUtil.startProcessingFile(FileUtil.java:225) Processing started for file: b9eeec53-5b5f-4494-83dc-8bb579f9a416 
+22 Apr 2025 22:37:22,953 INFO com.sismics.docs.core.listener.async.FileProcessingAsyncListener.on(FileProcessingAsyncListener.java:53) File created event: FileCreatedAsyncEvent{fileId=b9eeec53-5b5f-4494-83dc-8bb579f9a416, language=eng} 
+22 Apr 2025 22:37:22,954 INFO com.sismics.docs.core.listener.async.DocumentUpdatedAsyncListener.on(DocumentUpdatedAsyncListener.java:39) Document updated event: DocumentUpdatedAsyncEvent{documentId=2f44cb6c-fd9f-4557-9986-8f2c6689642a} 
+22 Apr 2025 22:37:23,200 INFO com.sismics.docs.core.listener.async.FileProcessingAsyncListener.extractContent(FileProcessingAsyncListener.java:176) Start extracting content from: File{id=b9eeec53-5b5f-4494-83dc-8bb579f9a416, name=Bibliography  .docx} 
+22 Apr 2025 22:37:23,211 INFO com.sismics.docs.core.listener.async.FileProcessingAsyncListener.extractContent(FileProcessingAsyncListener.java:182) File content extracted in 11ms: b9eeec53-5b5f-4494-83dc-8bb579f9a416 
+22 Apr 2025 22:37:23,221 INFO com.sismics.docs.core.util.FileUtil.endProcessingFile(FileUtil.java:235) Processing ended for file: b9eeec53-5b5f-4494-83dc-8bb579f9a416 
+22 Apr 2025 22:37:35,436 INFO com.sismics.docs.core.service.InboxService.shutDown(InboxService.java:57) Inbox service shutting down 
+22 Apr 2025 22:37:35,438 INFO com.sismics.docs.core.service.FileService.shutDown(FileService.java:44) File service shutting down 
