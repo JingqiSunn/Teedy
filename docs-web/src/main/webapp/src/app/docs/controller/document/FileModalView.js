@@ -3,7 +3,7 @@
 /**
  * File modal view controller.
  */
-angular.module('docs').controller('FileModalView', function ($uibModalInstance, $scope, $state, $stateParams, $sce, Restangular, $transitions, $http, $timeout) {
+angular.module('docs').controller('FileModalView', function ($uibModalInstance, $scope, $state, $stateParams, $sce, Restangular, $transitions, $http, Upload) {
 
   // 1. **Load the files** - Load files and try to set the current file
   var loadFiles = function () {
@@ -107,6 +107,7 @@ $scope.translateToChinese = function () {
           $scope.translationError = '没有返回翻译结果。';
           return;
         }
+        console.log('翻译结果：', $scope.translatedContent);
 
         // 第4步：将翻译后的内容保存为新文件
         var newFileData = {
