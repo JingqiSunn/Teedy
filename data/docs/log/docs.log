@@ -2783,3 +2783,54 @@ java.io.IOException: Error: Header doesn't contain versioninfo
 22 Apr 2025 23:15:07,440 INFO com.sismics.docs.core.util.FileUtil.endProcessingFile(FileUtil.java:235) Processing ended for file: 2dc874c9-0591-442c-884e-234015d1c54d 
 22 Apr 2025 23:15:07,441 INFO com.sismics.docs.core.service.InboxService.shutDown(InboxService.java:57) Inbox service shutting down 
 22 Apr 2025 23:15:07,441 INFO com.sismics.docs.core.service.FileService.shutDown(FileService.java:44) File service shutting down 
+22 Apr 2025 23:16:39,123 INFO com.sismics.util.jpa.EMF.getEntityManagerProperties(EMF.java:67) Configuring EntityManager from hibernate.properties 
+22 Apr 2025 23:16:39,415 INFO com.sismics.util.jpa.DbOpenHelper.open(DbOpenHelper.java:57) Opening database and executing incremental updates 
+22 Apr 2025 23:16:39,418 INFO com.sismics.util.jpa.DbOpenHelper.open(DbOpenHelper.java:106) Found database version 31, new version is 31, executing database incremental update scripts 
+22 Apr 2025 23:16:39,418 INFO com.sismics.util.jpa.DbOpenHelper.open(DbOpenHelper.java:108) Database upgrade complete 
+22 Apr 2025 23:16:39,418 INFO com.sismics.util.jpa.EMF.getEntityManagerProperties(EMF.java:67) Configuring EntityManager from hibernate.properties 
+22 Apr 2025 23:16:40,333 INFO com.sismics.util.ClasspathScanner.findClasses(ClasspathScanner.java:48) Found 1 classes for IndexingHandler 
+22 Apr 2025 23:16:40,356 INFO com.sismics.docs.core.util.indexing.LuceneIndexingHandler.initLucene(LuceneIndexingHandler.java:129) Using RAM Lucene storage 
+22 Apr 2025 23:16:40,395 INFO com.sismics.docs.core.service.FileService.startUp(FileService.java:39) File service starting up 
+22 Apr 2025 23:16:40,396 INFO com.sismics.docs.core.service.InboxService.startUp(InboxService.java:52) Inbox service starting up 
+22 Apr 2025 23:16:40,396 INFO com.sismics.docs.core.service.FileSizeService.startUp(FileSizeService.java:30) File size service starting up 
+22 Apr 2025 23:16:40,555 INFO com.sismics.docs.core.service.FileSizeService.lambda$runOneIteration$0(FileSizeService.java:50) No more file to process, stopping the service 
+22 Apr 2025 23:16:40,555 INFO com.sismics.docs.core.service.FileSizeService.shutDown(FileSizeService.java:35) File size service shutting down 
+22 Apr 2025 23:17:18,893 INFO com.sismics.docs.core.util.FileUtil.startProcessingFile(FileUtil.java:225) Processing started for file: ea835150-5fd1-4a80-b4a0-ffe48415cd04 
+22 Apr 2025 23:17:18,903 INFO com.sismics.docs.core.listener.async.FileProcessingAsyncListener.on(FileProcessingAsyncListener.java:53) File created event: FileCreatedAsyncEvent{fileId=ea835150-5fd1-4a80-b4a0-ffe48415cd04, language=eng} 
+22 Apr 2025 23:17:18,903 INFO com.sismics.docs.core.listener.async.DocumentUpdatedAsyncListener.on(DocumentUpdatedAsyncListener.java:39) Document updated event: DocumentUpdatedAsyncEvent{documentId=2f44cb6c-fd9f-4557-9986-8f2c6689642a} 
+22 Apr 2025 23:17:18,964 INFO com.sismics.util.ClasspathScanner.findClasses(ClasspathScanner.java:48) Found 7 classes for FormatHandler 
+22 Apr 2025 23:17:19,516 INFO com.sismics.docs.core.listener.async.FileProcessingAsyncListener.extractContent(FileProcessingAsyncListener.java:176) Start extracting content from: File{id=ea835150-5fd1-4a80-b4a0-ffe48415cd04, name=CS311_人工智能（H）_教学大纲.pdf} 
+22 Apr 2025 23:17:19,576 INFO com.sismics.docs.core.listener.async.FileProcessingAsyncListener.extractContent(FileProcessingAsyncListener.java:182) File content extracted in 61ms: ea835150-5fd1-4a80-b4a0-ffe48415cd04 
+22 Apr 2025 23:17:19,590 INFO com.sismics.docs.core.util.FileUtil.endProcessingFile(FileUtil.java:235) Processing ended for file: ea835150-5fd1-4a80-b4a0-ffe48415cd04 
+22 Apr 2025 23:17:37,009 INFO com.sismics.docs.core.util.FileUtil.startProcessingFile(FileUtil.java:225) Processing started for file: 75fcf55a-3506-4ef0-9b8c-201d99c2eaf6 
+22 Apr 2025 23:17:37,013 INFO com.sismics.docs.core.listener.async.FileProcessingAsyncListener.on(FileProcessingAsyncListener.java:53) File created event: FileCreatedAsyncEvent{fileId=75fcf55a-3506-4ef0-9b8c-201d99c2eaf6, language=eng} 
+22 Apr 2025 23:17:37,013 INFO com.sismics.docs.core.listener.async.DocumentUpdatedAsyncListener.on(DocumentUpdatedAsyncListener.java:39) Document updated event: DocumentUpdatedAsyncEvent{documentId=2f44cb6c-fd9f-4557-9986-8f2c6689642a} 
+22 Apr 2025 23:17:37,186 INFO com.sismics.docs.core.listener.async.FileProcessingAsyncListener.extractContent(FileProcessingAsyncListener.java:176) Start extracting content from: File{id=75fcf55a-3506-4ef0-9b8c-201d99c2eaf6, name=计算机组成.pdf} 
+22 Apr 2025 23:17:37,201 INFO com.sismics.docs.core.listener.async.FileProcessingAsyncListener.extractContent(FileProcessingAsyncListener.java:182) File content extracted in 15ms: 75fcf55a-3506-4ef0-9b8c-201d99c2eaf6 
+22 Apr 2025 23:17:37,205 INFO com.sismics.docs.core.util.FileUtil.endProcessingFile(FileUtil.java:235) Processing ended for file: 75fcf55a-3506-4ef0-9b8c-201d99c2eaf6 
+22 Apr 2025 23:17:57,551 INFO com.sismics.docs.core.util.FileUtil.startProcessingFile(FileUtil.java:225) Processing started for file: f68ea54b-7d2b-44df-b705-5c1d7253103e 
+22 Apr 2025 23:17:57,555 INFO com.sismics.docs.core.listener.async.FileProcessingAsyncListener.on(FileProcessingAsyncListener.java:53) File created event: FileCreatedAsyncEvent{fileId=f68ea54b-7d2b-44df-b705-5c1d7253103e, language=eng} 
+22 Apr 2025 23:17:57,555 INFO com.sismics.docs.core.listener.async.DocumentUpdatedAsyncListener.on(DocumentUpdatedAsyncListener.java:39) Document updated event: DocumentUpdatedAsyncEvent{documentId=2f44cb6c-fd9f-4557-9986-8f2c6689642a} 
+22 Apr 2025 23:17:57,666 INFO com.sismics.docs.core.listener.async.FileProcessingAsyncListener.extractContent(FileProcessingAsyncListener.java:176) Start extracting content from: File{id=f68ea54b-7d2b-44df-b705-5c1d7253103e, name=CS217-3-divide-and-conquerHandouts.pdf} 
+22 Apr 2025 23:17:57,685 WARN org.apache.fontbox.ttf.CmapSubtable.processSubtype14(CmapSubtable.java:359) Format 14 cmap table is not supported and will be ignored 
+22 Apr 2025 23:17:57,704 WARN org.apache.fontbox.ttf.CmapSubtable.processSubtype14(CmapSubtable.java:359) Format 14 cmap table is not supported and will be ignored 
+22 Apr 2025 23:17:57,718 INFO com.sismics.docs.core.listener.async.FileProcessingAsyncListener.extractContent(FileProcessingAsyncListener.java:182) File content extracted in 52ms: f68ea54b-7d2b-44df-b705-5c1d7253103e 
+22 Apr 2025 23:17:57,726 INFO com.sismics.docs.core.util.FileUtil.endProcessingFile(FileUtil.java:235) Processing ended for file: f68ea54b-7d2b-44df-b705-5c1d7253103e 
+22 Apr 2025 23:18:13,085 INFO com.sismics.docs.core.util.FileUtil.startProcessingFile(FileUtil.java:225) Processing started for file: 6f257857-69d1-4b22-8129-976d5742fc7a 
+22 Apr 2025 23:18:13,087 INFO com.sismics.docs.core.listener.async.FileProcessingAsyncListener.on(FileProcessingAsyncListener.java:53) File created event: FileCreatedAsyncEvent{fileId=6f257857-69d1-4b22-8129-976d5742fc7a, language=eng} 
+22 Apr 2025 23:18:13,087 INFO com.sismics.docs.core.listener.async.DocumentUpdatedAsyncListener.on(DocumentUpdatedAsyncListener.java:39) Document updated event: DocumentUpdatedAsyncEvent{documentId=2f44cb6c-fd9f-4557-9986-8f2c6689642a} 
+22 Apr 2025 23:18:13,528 INFO com.sismics.docs.core.listener.async.FileProcessingAsyncListener.extractContent(FileProcessingAsyncListener.java:176) Start extracting content from: File{id=6f257857-69d1-4b22-8129-976d5742fc7a, name=CS217-3-divide-and-conquerHandouts.pdf_translated.pdf} 
+22 Apr 2025 23:18:13,586 INFO com.sismics.docs.core.util.format.PdfFormatHandler.extractContent(PdfFormatHandler.java:64) OCR page 1/10 of PDF file containing only images 
+22 Apr 2025 23:18:16,216 INFO com.sismics.docs.core.util.format.PdfFormatHandler.extractContent(PdfFormatHandler.java:64) OCR page 2/10 of PDF file containing only images 
+22 Apr 2025 23:18:18,564 INFO com.sismics.docs.core.util.format.PdfFormatHandler.extractContent(PdfFormatHandler.java:64) OCR page 3/10 of PDF file containing only images 
+22 Apr 2025 23:18:20,874 INFO com.sismics.docs.core.util.format.PdfFormatHandler.extractContent(PdfFormatHandler.java:64) OCR page 4/10 of PDF file containing only images 
+22 Apr 2025 23:18:23,190 INFO com.sismics.docs.core.util.format.PdfFormatHandler.extractContent(PdfFormatHandler.java:64) OCR page 5/10 of PDF file containing only images 
+22 Apr 2025 23:18:25,341 INFO com.sismics.docs.core.util.format.PdfFormatHandler.extractContent(PdfFormatHandler.java:64) OCR page 6/10 of PDF file containing only images 
+22 Apr 2025 23:18:27,539 INFO com.sismics.docs.core.util.format.PdfFormatHandler.extractContent(PdfFormatHandler.java:64) OCR page 7/10 of PDF file containing only images 
+22 Apr 2025 23:18:30,005 INFO com.sismics.docs.core.util.format.PdfFormatHandler.extractContent(PdfFormatHandler.java:64) OCR page 8/10 of PDF file containing only images 
+22 Apr 2025 23:18:32,632 INFO com.sismics.docs.core.util.format.PdfFormatHandler.extractContent(PdfFormatHandler.java:64) OCR page 9/10 of PDF file containing only images 
+22 Apr 2025 23:18:34,974 INFO com.sismics.docs.core.util.format.PdfFormatHandler.extractContent(PdfFormatHandler.java:64) OCR page 10/10 of PDF file containing only images 
+22 Apr 2025 23:18:35,767 INFO com.sismics.docs.core.listener.async.FileProcessingAsyncListener.extractContent(FileProcessingAsyncListener.java:182) File content extracted in 22,239ms: 6f257857-69d1-4b22-8129-976d5742fc7a 
+22 Apr 2025 23:18:35,773 INFO com.sismics.docs.core.util.FileUtil.endProcessingFile(FileUtil.java:235) Processing ended for file: 6f257857-69d1-4b22-8129-976d5742fc7a 
+22 Apr 2025 23:47:58,183 INFO com.sismics.docs.core.service.InboxService.shutDown(InboxService.java:57) Inbox service shutting down 
+22 Apr 2025 23:47:58,185 INFO com.sismics.docs.core.service.FileService.shutDown(FileService.java:44) File service shutting down 
