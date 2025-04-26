@@ -1,0 +1,60 @@
+<div class="container">
+  <div class="col-md-4 col-md-offset-4">
+    <div class="well">
+      <form name="registerForm" novalidate>
+        <h2>注册新账号</h2>
+        
+        <div class="form-group" ng-class="{ 'has-error': registerForm.username.$invalid && registerForm.username.$dirty }">
+          <label for="inputUsername">用户名</label>
+          <input type="text" id="inputUsername" name="username" required
+                 class="form-control" ng-model="user.username" />
+          <span class="help-block" ng-show="registerForm.username.$error.required && registerForm.username.$dirty">
+            请输入用户名
+          </span>
+        </div>
+
+        <div class="form-group" ng-class="{ 'has-error': registerForm.email.$invalid && registerForm.email.$dirty }">
+          <label for="inputEmail">邮箱</label>
+          <input type="email" id="inputEmail" name="email" required
+                 class="form-control" ng-model="user.email" />
+          <span class="help-block" ng-show="registerForm.email.$error.required && registerForm.email.$dirty">
+            请输入邮箱
+          </span>
+          <span class="help-block" ng-show="registerForm.email.$error.email && registerForm.email.$dirty">
+            请输入有效的邮箱地址
+          </span>
+        </div>
+
+        <div class="form-group" ng-class="{ 'has-error': registerForm.password.$invalid && registerForm.password.$dirty }">
+          <label for="inputPassword">密码</label>
+          <input type="password" id="inputPassword" name="password" required
+                 class="form-control" ng-model="user.password" />
+          <span class="help-block" ng-show="registerForm.password.$error.required && registerForm.password.$dirty">
+            请输入密码
+          </span>
+        </div>
+
+        <div class="form-group" ng-class="{ 'has-error': registerForm.confirmPassword.$invalid && registerForm.confirmPassword.$dirty }">
+          <label for="inputConfirmPassword">确认密码</label>
+          <input type="password" id="inputConfirmPassword" name="confirmPassword" required
+                 class="form-control" ng-model="user.confirmPassword" />
+          <span class="help-block" ng-show="registerForm.confirmPassword.$error.required && registerForm.confirmPassword.$dirty">
+            请确认密码
+          </span>
+          <span class="help-block" ng-show="user.password !== user.confirmPassword && registerForm.confirmPassword.$dirty">
+            两次输入的密码不一致
+          </span>
+        </div>
+
+        <button class="btn btn-primary btn-block" ng-click="register()"
+                ng-disabled="registerForm.$invalid || user.password !== user.confirmPassword">
+          注册
+        </button>
+
+        <div class="text-center" style="margin-top: 15px;">
+          已有账号？<a href="#/login">立即登录</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div> 

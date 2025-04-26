@@ -67,10 +67,16 @@
               </button>
             </div>
 
-            <div class="col-md-6 text-right btn-password-lost">
-              <div class="well-sm">
-                <a href ng-click="openPasswordLost()">{{ 'login.password_lost_btn' | translate }}</a>
-              </div>
+            <div class="col-md-6">
+              <a href="#/register" class="btn btn-success">
+                <span class="fas fa-user-plus"></span> Register
+              </a>
+            </div>
+          </div>
+
+          <div class="row mt-3">
+            <div class="col-md-12 text-center">
+              <a href ng-click="openPasswordLost()">{{ 'login.password_lost_btn' | translate }}</a>
             </div>
           </div>
 
