@@ -3,13 +3,14 @@
 /**
  * Register controller.
  */
-angular.module('docs').controller('Register', function($scope, $state, Restangular, $translate, $dialog) {
+angular.module('docs').controller('Register', function($scope, $state, Restangular) {
   $scope.user = {
     username: '',
     email: '',
     password: '',
     confirmPassword: '',
-    storage_quota: 10000 // Default storage quota: 10GB
+    storage_quota: 1000000000, 
+    notChecked: true
   };
 
   /**
@@ -49,34 +50,34 @@ angular.module('docs').controller('Register', function($scope, $state, Restangul
    * Register.
    */
   $scope.register = function() {
-    // Check if passwords match
-    if ($scope.user.password !== $scope.user.confirmPassword) {
-      var title = $translate.instant('validation.password_not_match_title');
-      var msg = $translate.instant('validation.password_not_match_message');
-      var btns = [{result: 'ok', label: $translate.instant('ok'), cssClass: 'btn-primary'}];
-      $dialog.messageBox(title, msg, btns);
+    // Validate form first
+    console.log('Validating form');
+    if (!validateForm()) {
+      console.log('Form validation failed');
       return;
     }
+    console.log($scope.user);
 
-    // Send registration request
-    Restangular.one('user').post('register', {
+    console.log('Form validation passed, attempting to register');
+
+    // Create the user
+    Restangular.one('user').put({
       username: $scope.user.username,
+      email: $scope.user.email,
       password: $scope.user.password,
-      email: $scope.user.email
+      storage_quota: $scope.user.storage_quota,
+      notChecked: $scope.user.notChecked
     }).then(function() {
+      console.log('Registration successful');
       // Registration successful, redirect to login
-      $state.go('login');
+      //$state.go('login');
     }, function(response) {
-      // Registration failed
-      var title = $translate.instant('register.error_title');
-      var msg = '';
-      if (response.data && response.data.type) {
-        msg = $translate.instant('register.' + response.data.type);
-      } else {
-        msg = $translate.instant('register.error_message');
+      console.log('Registration failed:', response.data.type);
+      if (response.data.type === 'AlreadyExistingUsername') {
+        $scope.registerForm.username.$setValidity('alreadyExisting', false);
+      } else if (response.data.type === 'AlreadyExistingEmail') {
+        $scope.registerForm.email.$setValidity('alreadyExisting', false);
       }
-      var btns = [{result: 'ok', label: $translate.instant('ok'), cssClass: 'btn-primary'}];
-      $dialog.messageBox(title, msg, btns);
     });
   };
 
