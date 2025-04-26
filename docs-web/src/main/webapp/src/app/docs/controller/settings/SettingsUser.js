@@ -26,4 +26,24 @@ angular.module('docs').controller('SettingsUser', function($scope, $state, Resta
   $scope.editUser = function(user) {
     $state.go('settings.user.edit', { username: user.username });
   };
+
+  /**
+   * Approve a user.
+   */
+  $scope.approveUser = function(user, $event) {
+    $event.stopPropagation();
+    Restangular.one('user', user.username).post('approve').then(function() {
+      $scope.loadUsers();
+    });
+  };
+
+  /**
+   * Kill a user.
+   */
+  $scope.killUser = function(user, $event) {
+    $event.stopPropagation();
+    Restangular.one('user', user.username).post('kill').then(function() {
+      $scope.loadUsers();
+    });
+  };
 });

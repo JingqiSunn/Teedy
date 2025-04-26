@@ -284,6 +284,18 @@ public class UserDao {
         AuditLogUtil.create(userDb, AuditLogType.DELETE, userId);
     }
 
+    public void approveUser(String username) {
+        EntityManager em = ThreadLocalContext.get().getEntityManager();
+        Query q = em.createQuery("update User u set u.notChecked = false where u.username = :username");
+        q.setParameter("username", username);
+        q.executeUpdate();
+    }
+
+    public void killUser(String username) {
+        // delete the user
+        delete(username, "system");
+    }
+
     /**
      * Hash the user's password.
      * 

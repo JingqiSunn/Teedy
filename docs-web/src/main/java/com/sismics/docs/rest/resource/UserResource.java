@@ -1100,6 +1100,84 @@ public class UserResource extends BaseResource {
     }
 
     /**
+     * Approve a user.
+     *
+     * @api {post} /user/:username/approve Approve a user
+     * @apiName PostUserApprove
+     * @apiGroup User
+     * @apiParam {String} username Username
+     * @apiSuccess {String} status Status OK
+     * @apiError (client) ForbiddenError Access denied
+     * @apiError (client) UserNotFound User not found
+     * @apiPermission admin
+     *
+     * @param username Username
+     * @return Response
+     */
+    @POST
+    @Path("{username: [a-zA-Z0-9_@.-]+}/approve")
+    public Response approve(@PathParam("username") String username) {
+        if (!authenticate()) {
+            throw new ForbiddenClientException();
+        }
+        checkBaseFunction(BaseFunction.ADMIN);
+
+        // Get the user
+        UserDao userDao = new UserDao();
+        User user = userDao.getActiveByUsername(username);
+        if (user == null) {
+            throw new ClientException("UserNotFound", "The user does not exist");
+        }
+
+        // Approve the user
+        userDao.approveUser(username);
+
+        // Always return OK
+        JsonObjectBuilder response = Json.createObjectBuilder()
+                .add("status", "ok");
+        return Response.ok().entity(response.build()).build();
+    }
+
+    /**
+     * Kill a user.
+     *
+     * @api {post} /user/:username/kill Kill a user
+     * @apiName PostUserKill
+     * @apiGroup User
+     * @apiParam {String} username Username
+     * @apiSuccess {String} status Status OK
+     * @apiError (client) ForbiddenError Access denied
+     * @apiError (client) UserNotFound User not found
+     * @apiPermission admin
+     *
+     * @param username Username
+     * @return Response
+     */
+    @POST
+    @Path("{username: [a-zA-Z0-9_@.-]+}/kill")
+    public Response kill(@PathParam("username") String username) {
+        if (!authenticate()) {
+            throw new ForbiddenClientException();
+        }
+        checkBaseFunction(BaseFunction.ADMIN);
+
+        // Get the user
+        UserDao userDao = new UserDao();
+        User user = userDao.getActiveByUsername(username);
+        if (user == null) {
+            throw new ClientException("UserNotFound", "The user does not exist");
+        }
+
+        // Kill the user
+        userDao.killUser(username);
+
+        // Always return OK
+        JsonObjectBuilder response = Json.createObjectBuilder()
+                .add("status", "ok");
+        return Response.ok().entity(response.build()).build();
+    }
+
+    /**
      * Returns the authentication token value.
      *
      * @return Token value

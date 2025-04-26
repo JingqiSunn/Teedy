@@ -23,10 +23,10 @@
             <span class="fas fa-lock" ng-show="user.totp_enabled" uib-tooltip="{{ 'settings.user.totp_enabled' | translate }}"></span>
           </td>
           <td>{{ user.create_date | date: dateFormat }}</td>
-          <td>
+          <td ng-click="$event.stopPropagation()">
             <div ng-if="user.notChecked">
-              <button class="btn btn-success btn-xs" ng-click="$event.stopPropagation()">Approve</button>
-              <button class="btn btn-danger btn-xs" ng-click="$event.stopPropagation()">Kill</button>
+              <button class="btn btn-success btn-xs" ng-click="approveUser(user, $event)">Approve</button>
+              <button class="btn btn-danger btn-xs" ng-click="killUser(user, $event)">Kill</button>
             </div>
           </td>
         </tr>
