@@ -70,7 +70,7 @@ angular.module('docs').controller('Register', function($scope, $state, Restangul
     }).then(function() {
       console.log('Registration successful');
       // Registration successful, redirect to login
-      //$state.go('login');
+      $state.go('login');
     }, function(response) {
       console.log('Registration failed:', response.data.type);
       if (response.data.type === 'AlreadyExistingUsername') {
