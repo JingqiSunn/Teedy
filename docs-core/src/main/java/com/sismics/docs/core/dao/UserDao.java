@@ -53,6 +53,9 @@ public class UserDao {
             if (!result.verified || user.getDisableDate() != null) {
                 return null;
             }
+            if (user.isNotChecked() == true) {
+                return null;
+            }
             return user;
         } catch (NoResultException e) {
             return null;

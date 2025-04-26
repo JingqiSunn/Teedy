@@ -88,6 +88,10 @@ public class User implements Loggable {
      */
     @Column(name = "USE_DELETEDATE_D")
     private Date deleteDate;
+
+
+    @Column(name = "NOT_CHECKED")
+    private Boolean notChecked;
     
     /**
      * Disable date.
@@ -210,6 +214,19 @@ public class User implements Loggable {
 
     public User setOnboarding(boolean onboarding) {
         this.onboarding = onboarding;
+        return this;
+    }
+
+    public Boolean isNotChecked() {
+        if (this.notChecked == null) {
+            return false;
+        } else {
+            return notChecked;
+        }
+    }
+
+    public User setNotChecked(Boolean notChecked) {
+        this.notChecked = notChecked;
         return this;
     }
 
