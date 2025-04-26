@@ -48,6 +48,11 @@ public class UserDto {
      */
     private String totpKey;
 
+    /**
+     * Not checked.
+     */
+    private Boolean notChecked;
+
     public String getId() {
         return id;
     }
@@ -66,6 +71,17 @@ public class UserDto {
 
     public String getEmail() {
         return email;
+    }
+
+    public Boolean isNotChecked() {
+        if (notChecked == null) {
+            return false;
+        }
+        return notChecked;
+    }
+
+    public void setNotChecked(Boolean notChecked) {
+        this.notChecked = notChecked;
     }
 
     public void setEmail(String email) {

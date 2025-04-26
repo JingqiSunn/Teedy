@@ -744,7 +744,8 @@ public class UserResource extends BaseResource {
                     .add("storage_quota", userDto.getStorageQuota())
                     .add("storage_current", userDto.getStorageCurrent())
                     .add("create_date", userDto.getCreateTimestamp())
-                    .add("disabled", userDto.getDisableTimestamp() != null));
+                    .add("disabled", userDto.getDisableTimestamp() != null)
+                    .add("notChecked", userDto.isNotChecked()));
         }
         
         JsonObjectBuilder response = Json.createObjectBuilder()

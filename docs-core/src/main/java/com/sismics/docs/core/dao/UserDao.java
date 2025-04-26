@@ -319,7 +319,7 @@ public class UserDao {
         Map<String, Object> parameterMap = new HashMap<>();
         List<String> criteriaList = new ArrayList<>();
         
-        StringBuilder sb = new StringBuilder("select u.USE_ID_C as c0, u.USE_USERNAME_C as c1, u.USE_EMAIL_C as c2, u.USE_CREATEDATE_D as c3, u.USE_STORAGECURRENT_N as c4, u.USE_STORAGEQUOTA_N as c5, u.USE_TOTPKEY_C as c6, u.USE_DISABLEDATE_D as c7");
+        StringBuilder sb = new StringBuilder("select u.USE_ID_C as c0, u.USE_USERNAME_C as c1, u.USE_EMAIL_C as c2, u.USE_CREATEDATE_D as c3, u.USE_STORAGECURRENT_N as c4, u.USE_STORAGEQUOTA_N as c5, u.USE_TOTPKEY_C as c6, u.NOT_CHECKED as c7, u.USE_DISABLEDATE_D as c8");
         sb.append(" from T_USER u ");
         
         // Add search criterias
@@ -351,12 +351,11 @@ public class UserDao {
         QueryParam queryParam = QueryUtil.getSortedQueryParam(new QueryParam(sb.toString(), parameterMap), sortCriteria);
         @SuppressWarnings("unchecked")
         List<Object[]> l = QueryUtil.getNativeQuery(queryParam).getResultList();
-        
         // Assemble results
         List<UserDto> userDtoList = new ArrayList<>();
         for (Object[] o : l) {
             int i = 0;
-            UserDto userDto = new UserDto();
+            UserDto userDto = new UserDto();            
             userDto.setId((String) o[i++]);
             userDto.setUsername((String) o[i++]);
             userDto.setEmail((String) o[i++]);
@@ -364,6 +363,7 @@ public class UserDao {
             userDto.setStorageCurrent(((Number) o[i++]).longValue());
             userDto.setStorageQuota(((Number) o[i++]).longValue());
             userDto.setTotpKey((String) o[i++]);
+            userDto.setNotChecked((Boolean) o[i++]);
             if (o[i] != null) {
                 userDto.setDisableTimestamp(((Timestamp) o[i]).getTime());
             }

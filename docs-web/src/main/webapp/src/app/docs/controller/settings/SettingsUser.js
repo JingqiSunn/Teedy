@@ -13,6 +13,8 @@ angular.module('docs').controller('SettingsUser', function($scope, $state, Resta
       asc: true
     }).then(function(data) {
       $scope.users = data.users;
+      //log the users
+      console.log($scope.users);
     });
   };
   

@@ -357,3 +357,6 @@ select u1_0.USE_ID_C,u1_0.USE_CREATEDATE_D,u1_0.USE_DELETEDATE_D,u1_0.USE_DISABL
 	at org.eclipse.jetty.util.thread.QueuedThreadPool$Runner.doRunJob(QueuedThreadPool.java:1194)
 	at org.eclipse.jetty.util.thread.QueuedThreadPool$Runner.run(QueuedThreadPool.java:1149)
 	at java.base/java.lang.Thread.run(Thread.java:1583)
+2025-04-26 14:24:20 jdbc[5]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "SELECT U.USE_ID_C AS C0, U.USE_USERNAME_C AS C1, U.USE_EMAIL_C AS C2, U.USE_CREATEDATE_D AS C3, U.USE_STORAGECURRENT_N AS C4, U.USE_STORAGEQUOTA_N AS C5, U.USE_TOTPKEY_C AS C6, U.USE_DISABLEDATE_D AS C7[*]， U.NOT_CHECKED AS C8 FROM T_USER U  WHERE U.USE_DELETEDATE_D IS NULL ORDER BY C1 ASC "; SQL statement:
+select u.USE_ID_C as c0, u.USE_USERNAME_C as c1, u.USE_EMAIL_C as c2, u.USE_CREATEDATE_D as c3, u.USE_STORAGECURRENT_N as c4, u.USE_STORAGEQUOTA_N as c5, u.USE_TOTPKEY_C as c6, u.USE_DISABLEDATE_D as c7， u.NOT_CHECKED as c8 from T_USER u  where u.USE_DELETEDATE_D is null order by c1 asc [42000-199]

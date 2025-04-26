@@ -11,6 +11,7 @@
         <tr>
           <th>{{ 'settings.user.username' | translate }}</th>
           <th>{{ 'settings.user.create_date' | translate }}</th>
+          <th>Operation</th>
         </tr>
       </thead>
       <tbody>
@@ -22,6 +23,12 @@
             <span class="fas fa-lock" ng-show="user.totp_enabled" uib-tooltip="{{ 'settings.user.totp_enabled' | translate }}"></span>
           </td>
           <td>{{ user.create_date | date: dateFormat }}</td>
+          <td>
+            <div ng-if="user.notChecked">
+              <button class="btn btn-success btn-xs" ng-click="$event.stopPropagation()">Approve</button>
+              <button class="btn btn-danger btn-xs" ng-click="$event.stopPropagation()">Kill</button>
+            </div>
+          </td>
         </tr>
       </tbody>
     </table>
