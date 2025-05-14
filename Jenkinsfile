@@ -29,10 +29,12 @@ pipeline {
         stage('Upload image') {
             steps {
                 script {
-                    docker.withRegistry('https://registry.hub.docker.com', "dockerhub_credentials") {
-                        docker.image("${env.DOCKER_IMAGE}:${env.DOCKER_TAG}").push()
-                        docker.image("${env.DOCKER_IMAGE}:${env.DOCKER_TAG}").push('latest')
-                    }
+                    sh """
+                        docker login -u jingqisun2005 -p '2023Letmedosomethingbig'
+                        docker push ${env.DOCKER_IMAGE}:${env.DOCKER_TAG}
+                        docker tag ${env.DOCKER_IMAGE}:${env.DOCKER_TAG} ${env.DOCKER_IMAGE}:latest
+                        docker push ${env.DOCKER_IMAGE}:latest
+                    """
                 }
             }
         }
