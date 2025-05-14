@@ -8,7 +8,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 ENV LANG=C.UTF-8
 ENV LC_ALL=C.UTF-8
 ENV JAVA_HOME=/usr/bin/java
-ENV JAVA_OPTIONS=-Dfile.encoding=UTF-8 -Xmx1g
+ENV JAVA_OPTIONS -Dfile.encoding=UTF-8 -Xmx1g
 ENV JETTY_VERSION=11.0.20
 ENV JETTY_HOME=/opt/jetty
 
