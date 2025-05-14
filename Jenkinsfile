@@ -6,7 +6,7 @@ pipeline {
     environment {
         DOCKER_HUB_CREDENTIALS = credentials('dockerhub_credentials')
         DOCKER_IMAGE = 'jingqisun2005/teedy'
-        DOCKER_TAG = "lab"
+        DOCKER_TAG = "${env.BUILD_NUMBER}"
     }
     stages {
         stage('Build') {

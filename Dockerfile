@@ -2,15 +2,15 @@ FROM ubuntu:22.04
 LABEL maintainer="jingqi.sun@outlook.com"
 
 # Run Debian in non interactive mode
-ENV DEBIAN_FRONTEND noninteractive
+ENV DEBIAN_FRONTEND=noninteractive
 
 # Configure env
-ENV LANG C.UTF-8
-ENV LC_ALL C.UTF-8
-ENV JAVA_HOME /usr/bin/java
-ENV JAVA_OPTIONS -Dfile.encoding=UTF-8 -Xmx1g
-ENV JETTY_VERSION 11.0.20
-ENV JETTY_HOME /opt/jetty
+ENV LANG=C.UTF-8
+ENV LC_ALL=C.UTF-8
+ENV JAVA_HOME=/usr/bin/java
+ENV JAVA_OPTIONS=-Dfile.encoding=UTF-8 -Xmx1g
+ENV JETTY_VERSION=11.0.20
+ENV JETTY_HOME=/opt/jetty
 
 # Install packages
 RUN apt-get update && \
