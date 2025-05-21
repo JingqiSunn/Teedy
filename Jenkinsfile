@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     environment {
-        DEPLOYMENT_NAME = "Teedy"
-        CONTAINER_NAME  = "lab13"
+        DEPLOYMENT_NAME = "hello-node"
+        CONTAINER_NAME  = "docs"
         IMAGE_NAME      = "jingqisun2005/teedy:latest"
     }
 
